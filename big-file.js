@@ -1,5 +1,5 @@
 const maxWords = 100;
-const maxLines = 10000000;
+const maxLines = 1000000;
 const fs = require('fs');
 
 const words = [
@@ -11,7 +11,7 @@ const words = [
 		"love",
 		"unknown",
 		"feature",
-		"charachter",
+		"character",
 		"mouse",
 		"kids",
 		"table",
@@ -24,58 +24,58 @@ const words = [
 		"rapture"
 	];
 
-let i = maxLines;
 
 function randomInt(max){
 	return Math.floor(Math.random() * max);
 }
 
 function numberFormat(n){
-	return n.toLocaleString( undefined, 0, 0 );
+	return n.toLocaleString();
 }
 
 function generateRandomTextToFile(fd){
+	console.time("processing");
 
-	let buf = "";
-	while(i>0){
+	for(let i=0; i <maxLines; i++){
 
 		let wordCount = randomInt(maxWords);
-		buf = "";
+		let buffer = "";
 
 		while(wordCount>0){
-			buf += words[randomInt(words.length)] + (wordCount==1 ? "." : " ");
+			buffer += words[randomInt(words.length)] + (wordCount==1 ? "." : " ");
 			wordCount--;
 		}
-		buf += "\n";
-		fs.writeSync( fd, buf )
-		//write this stuff into a file
+		buffer += "\n";
+		fs.writeSync( fd, buffer )
+
 		if( i % 10000 === 0 ){
-			console.log( "Wrote " + numberFormat(maxLines - i)  + " lines." );
+			console.log( "Wrote " + numberFormat(i)  + " lines." );
 		}
-		//console.log(buf);
-		i--;
+		if( i % 100000 === 0 ){
+			console.timeLog("processing");
+		}
+
 	}
 
-	console.log( "Wrote " + numberFormat(maxLines - i)  + " lines." );
+	console.log( "Wrote " + numberFormat(maxLines)  + " lines." );
+	console.timeEnd("processing");
 }
 
-let fileD = null;
-
-//how can I write this part using promisses instead of call back hell?!
-
-fs.open("./big.txt", "w", (err, fd) => {
-
-	if(err){
-		console.error("There was an error so...");
-		return;
-	}
+let fd;
+try{
+	fd = fs.openSync( "./big.txt", "w" );
 
 	generateRandomTextToFile(fd);
-
-	fs.close(fd);
-
+		
 	console.log("Done");
-} );
+	
+}catch(err){
+	console.error(err);
+}finally{
+	if(fd){
+		fs.closeSync(fd);
+	}
+}
 
 
 
