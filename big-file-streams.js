@@ -42,6 +42,9 @@ writeStream.on('finish', ()=>{
 
 
 (async function main(){
+
+	console.log( "Generating Large File using Writable Streams." );
+
     console.time("streams");
 
     for(let i = 0; i<maxLines; i++){

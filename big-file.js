@@ -63,6 +63,8 @@ function generateRandomTextToFile(fd){
 
 let fd;
 try{
+	console.log( "Generating Large File using Sync Calls" );
+	
 	fd = fs.openSync( "./big.txt", "w" );
 
 	generateRandomTextToFile(fd);

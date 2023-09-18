@@ -63,6 +63,8 @@ async function generateRandomTextToFile(fd){
 }
 
 (async function main(){
+	console.log( "Generating Large File using Promises. This will take forever to run." );
+
 	try{
 		const fd = await fs.open( './big.txt', 'w');
 		await generateRandomTextToFile(fd);
