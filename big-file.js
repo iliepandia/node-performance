@@ -1,5 +1,5 @@
 const maxWords = 100;
-const maxLines = 1000000;
+const maxLines = 10000000;
 const fs = require('fs');
 
 const words = [
