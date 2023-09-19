@@ -41,29 +41,31 @@ const makePromise = (i) => {
                 resolve(`P${i}: finished execution.` );
             });
             res.on('error', (error) => {
-                console.log(error);
-                jobStatus[i] = "x";
+                jobStatus[i] = ".";
                 reject(`P${i}: failed execution.` );
             });
         } );
 
         req.on('error', (error) => {
-            console.log(error);
             reject('https request failed ' + error )
         });
 
         req.end();
 
     }).then((result) => {
-        console.log(result);
+        //console.log(result);
         // Log and restart the promise
         printStatus();
         return makePromise(i);
     }).catch((error) => {
-        jobStatus[i] = "x";
-        console.log(error);
+        jobStatus[i] = ".";
+        //console.log(error);
         printStatus();
-        return makePromise(i);
+        return new Promise( (resolve) => {
+            setTimeout( ()=>{
+                resolve( makePromise( i ) )
+            }, 4000 );
+        } );
     });
 };
 
