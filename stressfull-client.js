@@ -1,8 +1,8 @@
-const https = require("https")
+const http = require("http")
 
 const options = {
     hostname: 'localhost',
-    port: '443',
+    port: '8080',
     path: '/',
     method: 'GET'
 }
@@ -29,24 +29,33 @@ const makePromise = (i) => {
     return new Promise((resolve, reject) => {
         jobStatus[i] = "1";
 
-        const req = https.request( options, (res) => {
-            res.on('end', (d) => {
+        const req = http.request( options, (res) => {
+
+            res.on('data', (chunk) => {
+                //Interesting that I must have this here, or the 'end' event will not get triggered, ha!
+                //console.log(chunk);
+            });
+
+            res.on('end', () => {
                 jobStatus[i] = "0";
                 resolve(`P${i}: finished execution.` );
             });
             res.on('error', (error) => {
+                console.log(error);
                 jobStatus[i] = "x";
                 reject(`P${i}: failed execution.` );
             });
         } );
 
         req.on('error', (error) => {
-            reject('https request failed ', error )
+            console.log(error);
+            reject('https request failed ' + error )
         });
 
         req.end();
 
     }).then((result) => {
+        console.log(result);
         // Log and restart the promise
         printStatus();
         return makePromise(i);
@@ -62,6 +71,8 @@ const makePromise = (i) => {
 for (let i = 0; i < concurrentPromises; i++) {
     makePromise(i);
 }
+
+printStatus();
 
 // You don't need to run anything after initialization because 
 // each promise will keep re-creating itself after it resolves.
