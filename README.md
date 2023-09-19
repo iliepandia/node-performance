@@ -18,4 +18,5 @@ Now, parsing the data and returing a result to a request is a different story!
 - node.js with sync calls at a speed of 28.2s / GB
 - node.js with file writing stream at a speed of 31.7s / GB
 
-
+## Stress test client
+We can use promises to create a pool of workers that will do some sort of requests to a server.

@@ -8,9 +8,9 @@ let jobs = [];
 let makePromise = ( i ) => {
     return new Promise( (resolve, reject ) => {
         setTimeout( () => {
-            resolve("P:" + i + " is done");
             //install a new promise where one has been resolved
             jobs[i] = makePromise( i );
+            resolve("P:" + i + " is done");
         }, (Math.random() * 3 + 2) * 100 );
     } );
 };
